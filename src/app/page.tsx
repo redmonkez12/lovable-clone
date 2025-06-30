@@ -1,12 +1,22 @@
-import {useTRPC} from "@/trpc/client";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function Home() {
     const trpc = useTRPC();
-    trpc.hello.queryOptions({ text: "hello "});
-
+    const invoke = useMutation(trpc.invoke.mutationOptions({
+        onSuccess() {
+            toast.success("Background job started");
+        },
+    }));
     return (
-        <div>
-
+        <div className="p-4 max-w-7xl mx-auto">
+            <Button disabled={invoke.isPending}
+                    onClick={() => invoke.mutate({ text: "John" })}>Invoke Background
+                Job</Button>
         </div>
     );
 }
