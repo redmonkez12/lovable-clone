@@ -4,6 +4,7 @@ import {createAgent, createNetwork, createTool, anthropic, type Tool} from "@inn
 import {getSandbox, lastAssistantTextMessageContent} from "@/inngest/utils";
 import {z} from "zod";
 import {PROMPT} from "@/prompts";
+import prisma from "@/lib/db";
 
 interface AgentState {
     summary: string;
@@ -19,7 +20,8 @@ export const codeAgentFunction = inngest.createFunction(
             return sandbox.sandboxId;
         });
 
-        const createToolsWithStep = (inngestStep: unknown) => [
+        // eslint-disable-next-line
+        const createToolsWithStep = (inngestStep: any) => [
             createTool({
                 name: "terminal",
                 description: "Use the terminal to run commands",
@@ -56,7 +58,7 @@ export const codeAgentFunction = inngest.createFunction(
                         content: z.string(),
                     })),
                 }),
-                handler: async ({files}, {network}: Tool.options<AgentState>) => {
+                handler: async ({files}, {network}: Tool.Options<AgentState>) => {
                     let processedFiles = [];
 
                     if (Array.isArray(files)) {
@@ -176,6 +178,7 @@ export const codeAgentFunction = inngest.createFunction(
             if (isError) {
                 return prisma.message.create({
                     data: {
+                        projectId: event.data.projectId,
                         content: "Something went wrong. Please try again.",
                         role: "ASSISTANT",
                         type: "ERROR",
