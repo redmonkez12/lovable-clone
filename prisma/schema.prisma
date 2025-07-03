@@ -40,8 +40,9 @@ model Message {
   role      MessageRole
   type      MessageType
   createdAt DateTime    @default(now())
-  Fragment  Fragment[]
-  Project   Project?    @relation(fields: [projectId], references: [id])
+  updatedAt DateTime    @updatedAt
+  fragment  Fragment?
+  project   Project?    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
 }
 
