@@ -62,7 +62,7 @@ export const MessageForm = ({projectId}: Props) => {
                 )}
             >
                 <FormField
-                    name="content"
+                    name="value"
                     render={({field}) => (
                         <TextareaAutosize
                             {...field}
