@@ -16,8 +16,16 @@
 
 ## Login
 
-![login.png](public/login.png)!
+![login.png](public/login.png)
 
 ## Pricing
 
-[pricing.png](public/pricing.png)
+![pricing.png](public/pricing.png)
+
+## Project
+
+![project.png](public/project.png)
+
+## Code
+
+![code.png](public/code.png)
