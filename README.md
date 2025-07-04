@@ -6,3 +6,7 @@
 
 * You can prompt claude (or any supported LLM) to create your dream project
 * Beware - it costs tokens based on the model
+
+## Dashboard
+
+![dashboard.png](public/dashboard.png)
