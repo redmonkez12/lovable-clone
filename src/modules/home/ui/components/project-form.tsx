@@ -13,6 +13,8 @@ import {toast} from "sonner";
 import {useRouter} from "next/navigation";
 import {PROJECT_TEMPLATES} from "@/app/(home)/constants";
 import {useClerk} from "@clerk/nextjs";
+import {dark} from "@clerk/themes";
+import {useCurrentTheme} from "@/hooks/use-current-theme";
 
 const formSchema = z.object({
     value: z.string().min(1).max(1000, {message: "Value is too long"}),
@@ -21,6 +23,7 @@ const formSchema = z.object({
 
 export const ProjectForm = () => {
     const router = useRouter();
+    const currentTheme = useCurrentTheme();
     const trpc = useTRPC();
     const clerk = useClerk();
     const queryClient = useQueryClient();
@@ -36,12 +39,23 @@ export const ProjectForm = () => {
             queryClient.invalidateQueries(
                 trpc.projects.getMany.queryOptions(),
             );
+            queryClient.invalidateQueries(
+                trpc.usage.status.queryOptions(),
+            );
             router.push(`/projects/${data.id}`);
         },
         onError(error) {
             toast.error(error.message);
             if (error.data?.code === "UNAUTHORIZED") {
-                clerk.openSignIn();
+                clerk.openSignIn({
+                    appearance: {
+                        baseTheme: currentTheme === "dark" ? dark : undefined,
+                    },
+                });
+            }
+
+            if (error.data?.code === "TOO_MANY_REQUESTS") {
+                router.push("/pricing");
             }
         },
     }));
